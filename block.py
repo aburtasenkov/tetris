@@ -17,7 +17,13 @@ class Stationary_Block:
         return
 
 class Moving_Block(Stationary_Block):
-    def move(self, x, y):
-        self.outline = self.outline.move(x, y)
-        self.area = self.area.move(x, y)
+    def move(self, offset):
+        self.outline = self.outline.move(offset[0], offset[1])
+        self.area = self.area.move(offset[0], offset[1])
         return self
+
+    def move_ip(self, pos):
+        self.outline.move_ip(pos[0], pos[1])
+        self.area.move_ip(pos[0] + OUTLINE_SIZE, pos[1] + OUTLINE_SIZE)
+        return self
+    
