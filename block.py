@@ -17,12 +17,7 @@ class Stationary_Block:
         return
 
 class Moving_Block(Stationary_Block):
-    def __init__(self, pos_tuple, size_tuple, outline_color = black, area_color = random_color(), speed = DEFAULT_SPEED):
-        self.speed = speed
-
-        super().__init__(pos_tuple, size_tuple, outline_color, area_color)
-    
-    def move(self):
-        self.outline = self.outline.move(self.speed[0], self.speed[1])
-        self.area = self.area.move(self.speed[0], self.speed[1])
+    def move(self, x, y):
+        self.outline = self.outline.move(x, y)
+        self.area = self.area.move(x, y)
         return self
