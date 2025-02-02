@@ -2,11 +2,11 @@ import sys
 import pygame
 from block import *
 
-def make_game_area(screen):
+def make_game_area(screen: pygame.Surface) -> Stationary_Block:
     game_area = Stationary_Block(GAME_AREA_POS, GAME_AREA_SIZE, grey, white)
     return game_area
 
-def move_down_auto(block):
+def move_down_auto(block: Moving_Block) -> Moving_Block:
     global last_decrease_timepoint
 
     # move if 1 second has passed since last decrease
@@ -16,7 +16,7 @@ def move_down_auto(block):
 
     return block
 
-def pos_within_rect(rect, pos):
+def is_pos_within_rect(rect: pygame.Rect, pos: tuple[int, int]) -> bool:
     return ((rect.topleft[0] <= pos[0] and pos[0] <= rect.topright[0]) and 
             (rect.topleft[1] <= pos[1] and pos[1] <= rect.bottomright[1]))
 
@@ -46,7 +46,7 @@ if __name__ == "__main__":
 
         game_area = make_game_area(screen)
 
-        print(pos_within_rect(game_area.outline, current_block.outline.center))
+        print(is_pos_within_rect(game_area.outline, current_block.outline.center))
 
         game_area.draw(screen)
         current_block.draw(screen)
