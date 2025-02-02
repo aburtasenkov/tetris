@@ -2,39 +2,61 @@ import sys
 import pygame
 from block import *
 
+def get_fps(clock: pygame.time.Clock) -> int:
+    clock.tick()
+    return int(clock.get_fps())
+
 def make_game_area(screen: pygame.Surface) -> Stationary_Block:
     game_area = Stationary_Block(GAME_AREA_POS, GAME_AREA_SIZE, grey, white)
     return game_area
 
-last_decrease_timepoint: pygame.time = pygame.time.get_ticks()
-
-def move_down_auto(block: Moving_Block) -> Moving_Block:
-    global last_decrease_timepoint
-
-    # move if 1 second has passed since last decrease
-    if (pygame.time.get_ticks() - last_decrease_timepoint >= 1000):
-        block = block.move((0, MOVE_OFFSET))
-        last_decrease_timepoint = pygame.time.get_ticks()
-
-    return block
-
-def is_pos_within_rect(rect: pygame.Rect, pos: tuple[int, int]) -> bool:
+def pos_within_rect(rect: pygame.Rect, pos: tuple[int, int]) -> bool:
+    """return true coordinate pos is within rects edges"""
     return ((rect.topleft[0] <= pos[0] and pos[0] <= rect.topright[0]) and 
             (rect.topleft[1] <= pos[1] and pos[1] <= rect.bottomright[1]))
 
-def get_fps(clock: pygame.time.Clock) -> int:
-    clock.tick()
-    return int(clock.get_fps())
+def move_in_rect(rect: pygame.Rect, block: Moving_Block, offset: tuple[int, int]) -> Moving_Block:
+    """
+    move block if its center coordinate stays within rects edges
+
+    do it by pre-moving and checking if block.rect.center coordinate is within rect
+        if True - return block
+        else move block back
+    """
+
+    block = block.move(offset)
+    if not pos_within_rect(rect, block.outline.center):
+        block = block.move((-offset[0], -offset[1]))
+
+    return block
+
+def make_moving_timer():
+    """Make a function that returns in time has passed"""
+    last_timepoint = pygame.time.get_ticks()
+
+    def time_passed(time_in_ms: int) -> bool:
+        nonlocal last_timepoint
+
+        if pygame.time.get_ticks() - last_timepoint >= time_in_ms:
+            last_timepoint = pygame.time.get_ticks()
+            return True
+        return False
+
+    return time_passed
 
 if __name__ == "__main__":
 
     pygame.init()
     screen: pygame.Surface = pygame.display.set_mode(SCREEN_SIZE)
     pygame.display.set_caption("Tetris Game - aburtasenkov")
-
     clock = pygame.time.Clock()
 
-    current_block: Moving_Block = Moving_Block(START_POS, BLOCK_SIZE)
+    time_passed = make_moving_timer()
+    game_area = make_game_area(screen)
+
+    current_block = Moving_Block(START_POS, BLOCK_SIZE)
+
+    time_passed = make_moving_timer()
 
     while True:
         for event in pygame.event.get():
@@ -44,17 +66,18 @@ if __name__ == "__main__":
                 if event.key == pygame.K_UP:
                     continue
                 elif event.key == pygame.K_DOWN:
-                    current_block = current_block.move((0, MOVE_OFFSET))
+                    current_block = move_in_rect(game_area.outline, current_block, (0, MOVE_OFFSET))
                 elif event.key == pygame.K_LEFT:
-                    current_block = current_block.move((-MOVE_OFFSET, 0))
+                    current_block = move_in_rect(game_area.outline, current_block, (-MOVE_OFFSET, 0))
                 elif event.key == pygame.K_RIGHT:
-                    current_block = current_block.move((MOVE_OFFSET, 0))
+                    current_block = move_in_rect(game_area.outline, current_block, (MOVE_OFFSET, 0))
                 
         screen.fill(black)
 
-        game_area = make_game_area(screen)
+        if (time_passed(TIME_UNTIL_DECREASE)):
+            current_block = move_in_rect(game_area.outline, current_block, (0, MOVE_OFFSET))
 
-        print("Block within game area -", is_pos_within_rect(game_area.outline, current_block.outline.center))
+        print("Block within game area -", pos_within_rect(game_area.outline, current_block.outline.center))
 
         game_area.draw(screen)
         current_block.draw(screen)
