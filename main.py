@@ -44,8 +44,9 @@ def make_moving_timer():
 
     return time_passed
 
-if __name__ == "__main__":
+stationary_blocks = []
 
+def main():
     pygame.init()
     screen: pygame.Surface = pygame.display.set_mode(SCREEN_SIZE)
     pygame.display.set_caption("Tetris Game - aburtasenkov")
@@ -75,18 +76,27 @@ if __name__ == "__main__":
         screen.fill(black)
 
         if (time_passed(TIME_UNTIL_DECREASE)):
-            current_block = move_in_rect(game_area.outline, current_block, (0, MOVE_OFFSET))
+            last_pos = current_block.outline.center
+            block = move_in_rect(game_area.outline, current_block, (0, MOVE_OFFSET))
+            # Block has not moved -> make it stationary (base class)
+            if (current_block.outline.center == last_pos):
+                print(current_block.outline.center, last_pos)
 
-        print("Block within game area -", pos_within_rect(game_area.outline, current_block.outline.center))
+                block.__class__ = block.__class__.__base__
+                stationary_blocks.append(stationary_blocks)
+
+                current_block = Moving_Block(START_POS, BLOCK_SIZE)
+
+        for block in stationary_blocks:
+            print("Is within blocks from block_list", pos_within_rect(block.outline, current_block.outline.center))
 
         game_area.draw(screen)
         current_block.draw(screen)
+        for block in stationary_blocks:
+            block.draw(screen)
             
         pygame.display.flip()
 
 
-
-
-
-
-
+if __name__ == "__main__":
+    main()
