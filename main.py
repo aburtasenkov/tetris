@@ -54,8 +54,7 @@ if __name__ == "__main__":
 
         game_area = make_game_area(screen)
 
-        print(is_pos_within_rect(game_area.outline, current_block.outline.center))
-        print(get_fps(clock))
+        print("Block within game area -", is_pos_within_rect(game_area.outline, current_block.outline.center))
 
         game_area.draw(screen)
         current_block.draw(screen)
