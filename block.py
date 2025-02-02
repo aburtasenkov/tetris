@@ -1,4 +1,5 @@
 import pygame
+import typing
 
 from colors import *
 from constants import *
@@ -16,12 +17,12 @@ class Stationary_Block:
         pygame.draw.rect(screen, self.area_color, self.area, border_radius=INNER_BORDER_RADIUS)    # draw inner color
 
 class Moving_Block(Stationary_Block):
-    def move(self, offset: tuple[int, int]):
+    def move(self, offset: tuple[int, int]) -> typing.Self:
         self.outline = self.outline.move(offset[0], offset[1])
         self.area = self.area.move(offset[0], offset[1])
         return self
 
-    def move_ip(self, pos: tuple[int, int]):
+    def move_ip(self, pos: tuple[int, int]) -> typing.Self:
         self.outline.move_ip(pos[0], pos[1])
         self.area.move_ip(pos[0] + OUTLINE_SIZE, pos[1] + OUTLINE_SIZE)
         return self
