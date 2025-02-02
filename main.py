@@ -6,6 +6,8 @@ def make_game_area(screen: pygame.Surface) -> Stationary_Block:
     game_area = Stationary_Block(GAME_AREA_POS, GAME_AREA_SIZE, grey, white)
     return game_area
 
+last_decrease_timepoint: pygame.time = pygame.time.get_ticks()
+
 def move_down_auto(block: Moving_Block) -> Moving_Block:
     global last_decrease_timepoint
 
@@ -20,14 +22,20 @@ def is_pos_within_rect(rect: pygame.Rect, pos: tuple[int, int]) -> bool:
     return ((rect.topleft[0] <= pos[0] and pos[0] <= rect.topright[0]) and 
             (rect.topleft[1] <= pos[1] and pos[1] <= rect.bottomright[1]))
 
-pygame.init()
-screen = pygame.display.set_mode(SCREEN_SIZE)
-pygame.display.set_caption("Tetris Game - aburtasenkov")
-
-last_decrease_timepoint = pygame.time.get_ticks()
-current_block = Moving_Block(START_POS, BLOCK_SIZE)
+def get_fps(clock: pygame.time.Clock) -> int:
+    clock.tick()
+    return int(clock.get_fps())
 
 if __name__ == "__main__":
+
+    pygame.init()
+    screen: pygame.Surface = pygame.display.set_mode(SCREEN_SIZE)
+    pygame.display.set_caption("Tetris Game - aburtasenkov")
+
+    clock = pygame.time.Clock()
+
+    current_block: Moving_Block = Moving_Block(START_POS, BLOCK_SIZE)
+
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT: sys.exit()
@@ -47,6 +55,7 @@ if __name__ == "__main__":
         game_area = make_game_area(screen)
 
         print(is_pos_within_rect(game_area.outline, current_block.outline.center))
+        print(get_fps(clock))
 
         game_area.draw(screen)
         current_block.draw(screen)
