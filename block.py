@@ -5,7 +5,10 @@ from colors import *
 from constants import *
 
 class Stationary_Block:
-    def __init__(self, pos: tuple[int, int], size: tuple[int, int], outline_color = black, area_color = random_color()):
+    def __init__(self, pos: tuple[int, int], size: tuple[int, int], outline_color = black, area_color = None):
+        if (not area_color):
+            area_color = random_color()
+
         self.outline_color = outline_color
         self.area_color = area_color
 
@@ -26,4 +29,3 @@ class Moving_Block(Stationary_Block):
         self.outline.move_ip(pos[0], pos[1])
         self.area.move_ip(pos[0] + OUTLINE_SIZE, pos[1] + OUTLINE_SIZE)
         return self
-    
