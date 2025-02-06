@@ -70,20 +70,18 @@ def make_moving_timer():
 
     return time_passed
 
-stationary_blocks: list[list[Stationary_Block]] = [[None] * 10] * 20
-
 def main():
     pygame.init()
     screen: pygame.Surface = pygame.display.set_mode(SCREEN_SIZE)
-    pygame.display.set_caption("Tetris Game - aburtasenkov")
+    pygame.display.set_caption(GAME_TITLE)
     clock = pygame.time.Clock()
 
     time_passed = make_moving_timer()
     game_area = make_game_area(screen)
 
-    current_block = Moving_Block(START_POS, BLOCK_SIZE)
+    stationary_blocks: list[list[Stationary_Block]] = [[None] * 10] * 20
 
-    time_passed = make_moving_timer()
+    current_block = Moving_Block(START_POS, BLOCK_SIZE)
 
     while True:
         for event in pygame.event.get():
@@ -102,15 +100,17 @@ def main():
         screen.fill(black)
 
         if (time_passed(TIME_UNTIL_DECREASE)):
-            last_pos = current_block.outline.center
+            last_pos = current_block.outline.topleft
 
             current_block = check_collisions_move(game_area.outline, stationary_blocks, current_block, (0, MOVE_OFFSET))
 
             # Block has not moved -> make it stationary (base class)
-            if (current_block.outline.center == last_pos):
+            if (current_block.outline.topleft == last_pos):
+                row_index = int((last_pos[1] - GAME_AREA_POS[1]) / MOVE_OFFSET)
+                obj_index = int((last_pos[0] - GAME_AREA_POS[0]) / MOVE_OFFSET)
 
                 current_block.__class__ = current_block.__class__.__base__
-                stationary_blocks.append(current_block)
+                stationary_blocks[row_index][obj_index] = current_block
 
         # create new block for moving if it has sunk
         if (type(current_block) == Stationary_Block):
