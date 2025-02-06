@@ -16,11 +16,11 @@ def pos_within_rect(rect: pygame.Rect, pos: tuple[int, int]) -> bool:
     return ((rect.topleft[0] <= pos[0] and pos[0] <= rect.topright[0]) and 
             (rect.topleft[1] <= pos[1] and pos[1] <= rect.bottomright[1]))
 
-def check_collisions(game_area: pygame.Rect, stationary_blocks: typing.Iterable[Stationary_Block], pos: tuple[int,int]) -> bool:
+def check_collisions(game_area: pygame.Rect, stationary_blocks: typing.Iterable[list[Stationary_Block]], pos: tuple[int,int]) -> bool:
     """
     check for collisions with game_area and all stationary blocks from block_list
 
-    requirements:
+    requirements:   
     1. collision with game_area must be true -> within game_area
     2. all collisions with block_list objects must be false -> center position is not within any existing blocks
 
@@ -32,13 +32,15 @@ def check_collisions(game_area: pygame.Rect, stationary_blocks: typing.Iterable[
     if (not pos_within_rect(game_area, pos)):
         return False
     
-    for block in stationary_blocks:
-        if (pos_within_rect(block.outline, pos)):
-            return False
+    for row in stationary_blocks:
+        for block in row:
+            if block != None:
+                if (pos_within_rect(block.outline, pos)):
+                    return False
 
     return True
 
-def check_collisions_move(game_area: pygame.Rect, stationary_blocks: typing.Iterable[Stationary_Block], block: Moving_Block, offset: tuple[int, int]) -> Moving_Block:
+def check_collisions_move(game_area: pygame.Rect, stationary_blocks: typing.Iterable[list[Stationary_Block]], block: Moving_Block, offset: tuple[int, int]) -> Moving_Block:
     """
     move block if check_collisions returns true
 
@@ -68,7 +70,7 @@ def make_moving_timer():
 
     return time_passed
 
-stationary_blocks: list[Stationary_Block] = []
+stationary_blocks: list[list[Stationary_Block]] = [[None] * 10] * 20
 
 def main():
     pygame.init()
@@ -117,8 +119,10 @@ def main():
         game_area.draw(screen)
         current_block.draw(screen)
         
-        for block in stationary_blocks:
-            block.draw(screen)
+        for row in stationary_blocks:
+            for block in row:
+                if block != None:
+                    block.draw(screen)
 
         pygame.display.flip()
 
