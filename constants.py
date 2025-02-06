@@ -1,4 +1,6 @@
 
+GAME_TITLE = "Tetris Game - aburtasenkov"
+
 SCREEN_SIZE = WIDTH, HEIGHT = 480, 800
 
 # Blocks cosmetics
