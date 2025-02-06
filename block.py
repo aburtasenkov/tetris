@@ -29,3 +29,11 @@ class Moving_Block(Stationary_Block):
         self.outline.move_ip(pos[0], pos[1])
         self.area.move_ip(pos[0] + OUTLINE_SIZE, pos[1] + OUTLINE_SIZE)
         return self
+
+def copy_block(block: Stationary_Block) -> Stationary_Block:
+    new_block = Stationary_Block(block.outline.topleft,
+                                 (block.outline.topright[0] - block.outline.topleft[0], block.outline.bottomleft[1] - block.outline.topleft[1]), 
+                                 block.outline_color,
+                                 block.area_color
+                                )
+    return new_block

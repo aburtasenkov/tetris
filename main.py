@@ -110,7 +110,7 @@ def main():
                 obj_index = int((last_pos[0] - GAME_AREA_POS[0]) / MOVE_OFFSET)
 
                 current_block.__class__ = current_block.__class__.__base__
-                stationary_blocks[row_index][obj_index] = current_block
+                stationary_blocks[row_index][obj_index] = copy_block(current_block)
 
         # create new block for moving if it has sunk
         if (type(current_block) == Stationary_Block):
