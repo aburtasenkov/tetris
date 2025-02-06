@@ -1,5 +1,6 @@
 import pygame
 import typing
+import numpy
 
 from colors import *
 from constants import *
@@ -29,6 +30,32 @@ class Moving_Block(Stationary_Block):
         self.outline.move_ip(pos[0], pos[1])
         self.area.move_ip(pos[0] + OUTLINE_SIZE, pos[1] + OUTLINE_SIZE)
         return self
+
+class Shape(Moving_Block):
+    def __init__(self, pos: tuple[int, int], size: tuple[int, int], outline_color = black, area_color = None):
+        super().__init__(pos, size, outline_color, area_color)
+
+        self.matrix = numpy.array(
+            [[None] * 5] * 5, dtype=bool
+        )
+    
+    def draw(self, screen: pygame.Surface) -> None:
+        # TODO
+        return
+
+class I_Shape(Shape):
+    def __init__(self, pos: tuple[int, int], size: tuple[int, int], outline_color = black, area_color = None):
+        super().__init__(pos, size, outline_color, area_color)
+
+        self.matrix = I_SHAPE_MATRIX
+
+        for array in self.matrix:
+            for b in array:
+                if b:
+                    print(1, end=" ")
+                else:
+                    print(0, end=" ")
+            print()
 
 def copy_block(block: Stationary_Block) -> Stationary_Block:
     new_block = Stationary_Block(block.outline.topleft,
