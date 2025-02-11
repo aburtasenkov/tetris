@@ -79,7 +79,7 @@ def main():
     time_passed = make_moving_timer()
     game_area = make_game_area(screen)
 
-    stationary_blocks: list[list[Stationary_Block]] = [[None] * 10] * 20
+    stationary_blocks: list[list[Stationary_Block]] = [[None for _ in range(10)] for _ in range(20)] 
 
     current_block = Moving_Block(START_POS, BLOCK_SIZE)
 
