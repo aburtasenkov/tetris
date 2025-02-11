@@ -26,6 +26,7 @@ class Moving_Block(Stationary_Block):
         self.area = self.area.move(offset[0], offset[1])
         return self
 
+    # move in position
     def move_ip(self, pos: tuple[int, int]) -> typing.Self:
         self.outline.move_ip(pos[0], pos[1])
         self.area.move_ip(pos[0] + OUTLINE_SIZE, pos[1] + OUTLINE_SIZE)
