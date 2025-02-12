@@ -1,5 +1,3 @@
-import numpy
-
 GAME_TITLE = "Tetris Game - aburtasenkov"
 
 SCREEN_SIZE = WIDTH, HEIGHT = 480, 800
@@ -27,12 +25,10 @@ START_POS = (GAME_AREA_POS[0] + (GAME_AREA_BLOCKS_HORIZONTAL / 2 * BLOCK_WIDTH),
 TIME_UNTIL_DECREASE = 1000
 
 # matrices for shapes of blocks
-I_SHAPE_MATRIX = numpy.array(
-    [
+I_SHAPE_MATRIX = [
         [0, 0, 1, 0, 0],
         [0, 0, 1, 0, 0],
         [0, 0, 1, 0, 0],
         [0, 0, 1, 0, 0],
         [0, 0, 0, 0, 0]
     ]
-)
