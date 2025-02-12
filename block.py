@@ -35,29 +35,29 @@ class Moving_Block(Stationary_Block):
         return self
 
 class Shape:
-    def __init__(self, pos: tuple[int, int], size: tuple[int, int], outline_color = black, area_color = None):
+    def __init__(self, matrix: list[list[int]], pos: tuple[int, int], size: tuple[int, int], outline_color = black, area_color = None):
         if (not area_color):
             area_color = random_color()
 
-        self.arr = []
+        self.blocks = []
 
-        for i in range(len(I_SHAPE_MATRIX)):
-            for j in range(len(I_SHAPE_MATRIX[i])):
-                if I_SHAPE_MATRIX[i][j]:
-                    self.arr.append(Moving_Block((
+        for i in range(len(matrix)):
+            for j in range(len(matrix[i])):
+                if matrix[i][j]:
+                    self.blocks.append(Moving_Block((
                         pos[0] + BLOCK_SIZE[0] * (j - 2),
                         pos[1] + BLOCK_SIZE[1] * (i - 2)
                     ), size, outline_color, area_color))
     
     def draw(self, screen: pygame.Surface) -> None:
-        for block in self.arr:
+        for block in self.blocks:
             block.draw(screen)
     
     def move(self, offset: tuple[int, int]) -> None:
-        for block in self.arr:
+        for block in self.blocks:
             block = block.move(offset)
 
     # move in position
     def move_ip(self, pos: tuple[int, int]) -> None:
-        for block in self.arr:
+        for block in self.blocks:
             block = block.move_ip(pos)

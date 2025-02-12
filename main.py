@@ -17,7 +17,7 @@ def pos_within_rect(rect: pygame.Rect, pos: tuple[int, int]) -> bool:
     return ((rect.topleft[0] <= pos[0] and pos[0] <= rect.topright[0]) and 
             (rect.topleft[1] <= pos[1] and pos[1] <= rect.bottomright[1]))
 
-def check_collisions(game_area: pygame.Rect, stationary_blocks: typing.Iterable[list["Stationary_Block"]], pos: tuple[int,int]) -> bool:
+def check_collisions(game_area: pygame.Rect, stationary_blocks: typing.Iterable[list[Stationary_Block]], pos: tuple[int,int]) -> bool:
     """
     check for collisions with game_area and all stationary blocks from block_list
 
@@ -40,21 +40,20 @@ def check_collisions(game_area: pygame.Rect, stationary_blocks: typing.Iterable[
                     return False
     return True
 
-def move_block(game_area: pygame.Rect, stationary_blocks: typing.Iterable[list["Stationary_Block"]], block: "Moving_Block", offset: tuple[int, int]) -> "Moving_Block":
-    """
-    move block if check_collisions is valid
-
-    do it by pre-moving and checking if block.outline.center coordinate is within game_area and outside of blocks in stationary_blocks 
-        if True - return block
-        else move block back
-    """
-
+def move_block(game_area: pygame.Rect, stationary_blocks: typing.Iterable[list[Stationary_Block]], block: Moving_Block, offset: tuple[int, int]) -> Moving_Block:
     block = block.move(offset)
 
+    # move back at failure
     if not check_collisions(game_area, stationary_blocks, block.outline.center):
         block = block.move((-offset[0], -offset[1]))
 
     return block
+
+def move_shape(game_area: pygame.Rect, stationary_blocks: typing.Iterable[list[Stationary_Block]], shape: Shape, offset: tuple[int, int]) -> None:
+    moved_blocks = [block.move(offset) for block in copy.deepcopy(shape.blocks)]
+
+    if all(check_collisions(game_area, stationary_blocks, block.outline.center) for block in moved_blocks):
+        shape.blocks = moved_blocks
 
 def make_moving_timer():
     """Make a function that returns in time has passed"""
@@ -83,7 +82,7 @@ def main():
 
     current_block = Moving_Block(START_POS, BLOCK_SIZE)
 
-    test = Shape(START_POS, BLOCK_SIZE)
+    test = Shape(I_SHAPE_MATRIX ,START_POS, BLOCK_SIZE)
 
     while True:
 
@@ -105,7 +104,7 @@ def main():
         # auto move down
         if (time_passed(TIME_UNTIL_DECREASE)):
 
-            test.move((0, MOVE_OFFSET))
+            move_shape(game_area.outline, stationary_blocks, test, (0, MOVE_OFFSET))
 
             last_pos = current_block.outline.topleft
 
